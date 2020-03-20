@@ -1,6 +1,6 @@
 from R_ev3dev.interpreter import Interpreter, Command, Reference
 from R_ev3dev.motor import Tank
-from R_ev3dev.sensor import Color
+from R_ev3dev.sensor import Color, Infrared
 from R_ev3dev.server import Server
 from R_ev3dev.ev3 import ev3dev2
 from ev3dev2 import motor, sensor
@@ -24,6 +24,7 @@ def ev3_interpreter():
         Reference('4', sensor.INPUT_4),
         Tank("tank"),
         Color("color"),
+        Infrared("infrared"),
         NoOperation("hello")
     ])
 
