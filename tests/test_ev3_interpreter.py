@@ -7,3 +7,7 @@ class TestEv3Interpreter(unittest.TestCase):
     def test_nop(self):
         i = ev3_interpreter()
         self.assertEqual(i.evaluate("hello"), "ok")
+
+    def test_comment(self):
+        i = ev3_interpreter()
+        self.assertEqual(i.evaluate("# hello"), "")
