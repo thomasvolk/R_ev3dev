@@ -18,9 +18,11 @@ class Connection(object):
                     break
                 request = data.decode()
                 logging.info("<= {}".format(request.strip()))
-                response = "{}\n".format(self.__interpreter.evaluate(request))
-                logging.info("=> {}".format(response.strip()))
-                conn.sendall(response.encode())
+                response = self.__interpreter.evaluate(request)
+                if response:
+                    response_data = "{}\n".format(response)
+                    logging.info("=> {}".format(response_data.strip()))
+                    conn.sendall(response_data.encode())
         logging.info("close connection {}".format(addr))
 
 
