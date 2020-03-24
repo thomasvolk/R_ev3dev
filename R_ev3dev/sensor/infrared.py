@@ -18,8 +18,12 @@ class GetDistance(PeripheralAction):
         super().__init__("distance")
 
     def invoke(self, context, args):
-        channel = args[0]
-        return context["infrared_sensor"].distance(channel=channel)
+        sensor = context["infrared_sensor"]
+        if len(args):
+            channel = args[0]
+            return sensor.distance(channel=channel)
+        else:
+            return sensor.distance()
 
 
 class Infrared(PeripheralCommand):

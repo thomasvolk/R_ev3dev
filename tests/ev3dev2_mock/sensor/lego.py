@@ -11,4 +11,4 @@ class InfraredSensor(object):
         self.kwargs = kwargs
 
     def distance(self, channel=1):
-        return 45
+        return 44 + int(channel)
