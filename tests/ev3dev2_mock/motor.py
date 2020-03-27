@@ -3,10 +3,15 @@ OUTPUT_B = 'outB'
 OUTPUT_C = 'outC'
 OUTPUT_D = 'outD'
 
+
 class Motor(object):
     def __init__(self, address=None, **kwargs):
-        self._address = address
+        self.address = address
         self.kwargs = kwargs
+        self.log = []
+
+    def on_for_rotations(self, speed, rotations, brake=True, block=True):
+        self.log.append(('on_for_rotations', repr(speed), rotations))
 
 
 class LargeMotor(Motor):

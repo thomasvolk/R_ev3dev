@@ -1,8 +1,7 @@
 from R_ev3dev.interpreter import Interpreter, Command, Reference
-from R_ev3dev.motor import Tank
+from R_ev3dev.motor import Tank, MediumMotor
 from R_ev3dev.sensor import Color, Infrared
 from R_ev3dev.server import Server
-from R_ev3dev.ev3 import ev3dev2
 from ev3dev2 import motor, sensor
 import logging, os
 
@@ -14,6 +13,7 @@ class NoOperation(Command):
 
 def ev3_interpreter():
     return Interpreter([
+        NoOperation("hello"),
         Reference('A', motor.OUTPUT_A),
         Reference('B', motor.OUTPUT_B),
         Reference('C', motor.OUTPUT_C),
@@ -25,7 +25,7 @@ def ev3_interpreter():
         Tank("tank"),
         Color("color"),
         Infrared("infrared"),
-        NoOperation("hello")
+        MediumMotor("medium_motor")
     ])
 
 

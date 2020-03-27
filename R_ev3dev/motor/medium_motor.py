@@ -7,11 +7,10 @@ class On(PeripheralAction):
         super().__init__("on")
 
     def invoke(self, context, args):
-        out_1 = args[0]
-        out_2 = args[1]
-        move_tank  = ev3dev2.motor.MoveTank(out_1, out_2)
-        context["tank"] = move_tank
-        return move_tank
+        out = args[0]
+        motor = ev3dev2.motor.MediumMotor(out)
+        context["medium_motor"] = motor
+        return motor
 
 
 class OnForRotations(PeripheralAction):
@@ -19,17 +18,15 @@ class OnForRotations(PeripheralAction):
         super().__init__("on_for_rotations")
 
     def invoke(self, context, args):
-        left_speed = int(args[0])
-        right_speed = int(args[1])
-        rotations = float(args[2])
-        return context["tank"].on_for_rotations(
-            ev3dev2.motor.SpeedPercent(left_speed),
-            ev3dev2.motor.SpeedPercent(right_speed),
+        speed = int(args[0])
+        rotations = float(args[1])
+        return context["medium_motor"].on_for_rotations(
+            ev3dev2.motor.SpeedPercent(speed),
             rotations
         )
 
 
-class Tank(PeripheralCommand):
+class MediumMotor(PeripheralCommand):
     def __init__(self, name):
         super().__init__(name, [
                             On(),
