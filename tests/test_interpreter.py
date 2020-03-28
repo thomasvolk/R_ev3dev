@@ -55,8 +55,8 @@ class TestInterpreter(unittest.TestCase):
         self.assertEqual(i.evaluate_internal("test01 1 #X 3").value, ('Test01Command', ['1', 2, '3']))
         self.assertEqual(i.evaluate_internal("test02 #X   #Y ").value, ('Test02Command', [2, 100]))
         self.assertEqual(i.evaluate_internal("test03  ").value, ('Test03Command', []))
-        self.assertEqual(i.evaluate_internal("  "), '')
-        self.assertEqual(i.evaluate_internal("  # 123"), '')
+        self.assertRaises(KeyError, i.evaluate_internal, "   ")
+        self.assertRaises(KeyError, i.evaluate_internal, "")
         self.assertRaises(KeyError, i.evaluate_internal, "x")
 
     def test_evaluate(self):

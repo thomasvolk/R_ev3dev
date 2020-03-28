@@ -76,8 +76,6 @@ class Interpreter(object):
 
     def evaluate_internal(self, line):
         stripped_line = line.strip()
-        if not stripped_line or stripped_line.startswith('#'):
-            return ''
         arg_str = ""
         parts = stripped_line.split(' ', 1)
         cmd_name = parts[0]
