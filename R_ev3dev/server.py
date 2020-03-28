@@ -1,6 +1,9 @@
 from threading import Thread, RLock
 import socket, logging
-from R_ev3dev.interpreter import InterruptException
+
+
+class CloseException(Exception):
+    """ this exception will close the connection """
 
 
 class Connection(object):
@@ -28,7 +31,7 @@ class Connection(object):
                             response_data = "{}\n".format(response)
                             _log("=> {}", response_data.strip())
                             conn.sendall(response_data.encode())
-                    except InterruptException:
+                    except CloseException:
                         break
             _log("close")
         finally:

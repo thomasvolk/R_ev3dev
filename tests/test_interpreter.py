@@ -3,6 +3,14 @@ import unittest
 from R_ev3dev.interpreter import Interpreter, Command, Reference
 
 
+class ExceptionCommand(Command):
+    class TestError(Exception):
+        pass
+
+    def invoke(self, interpreter_obj, args):
+        return interpreter_obj.throw(ExceptionCommand.TestError())
+
+
 class TestCommandInt(Command):
     def invoke(self, interpreter_obj, args):
         return 1
@@ -65,3 +73,8 @@ class TestInterpreter(unittest.TestCase):
         self.assertEqual(i.evaluate("test01 1 #X 3"), "ok")
         self.assertEqual(i.evaluate("x"), "error KeyError 'x'")
 
+    def test_exception(self):
+        i = Interpreter([
+            ExceptionCommand("err")
+        ])
+        self.assertRaises(ExceptionCommand.TestError, i.evaluate, "err")

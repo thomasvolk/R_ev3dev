@@ -37,16 +37,18 @@ class Command(Item, ABC):
         """
 
 
-class InterruptException(Exception):
-    """
-    interpreter interruption exception
-
-    if this exception will be raised by a command,
-    it will be raised by the interpreter as well
-    """
-
-
 class Interpreter(object):
+    class WrapperException(Exception):
+        """
+        interpreter exception
+
+        if this exception will be raised by the Interpreter.raise_exception method,
+        the interpreter will raise the
+        """
+        def __init__(self, origin):
+            self.origin = origin
+            super()
+
     def __init__(self, items):
         self._commands = {item.name: item for item in items if isinstance(item, Command)}
         self._references = {item.key: item for item in items if isinstance(item, Reference)}
@@ -57,8 +59,8 @@ class Interpreter(object):
             return ref.value
         return item
 
-    def close(self):
-        raise InterruptException()
+    def throw(self, e):
+        raise Interpreter.WrapperException(e)
 
     @property
     def commands(self):
@@ -67,8 +69,8 @@ class Interpreter(object):
     def evaluate(self, line):
         try:
             return str(self.evaluate_internal(line))
-        except InterruptException as ie:
-            raise ie
+        except Interpreter.WrapperException as ie:
+            raise ie.origin
         except Exception as e:
             return 'error {} {}'.format(e.__class__.__name__, str(e))
 
