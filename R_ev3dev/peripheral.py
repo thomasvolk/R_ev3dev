@@ -20,7 +20,7 @@ class PeripheralCommand(Command):
         self.__context = {}
         super().__init__(name)
 
-    def invoke(self, args):
+    def invoke(self, interpreter_obj,  args):
         peripheral_id = args[0]
         action = args[1]
         context = self.__context.setdefault(peripheral_id, {})

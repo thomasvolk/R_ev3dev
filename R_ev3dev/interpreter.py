@@ -27,13 +27,23 @@ class Reference(Item):
 
 class Command(Item, ABC):
     @abstractmethod
-    def invoke(self, args):
+    def invoke(self, interpreter_obj, args):
         """
         abstract method for command execution
 
+        :param interpreter_obj: interpreter
         :param args: arguments
         :return: command result
         """
+
+
+class InterruptException(Exception):
+    """
+    interpreter interruption exception
+
+    if this exception will be raised by a command,
+    it will be raised by the interpreter as well
+    """
 
 
 class Interpreter(object):
@@ -47,9 +57,18 @@ class Interpreter(object):
             return ref.value
         return item
 
+    def close(self):
+        raise InterruptException()
+
+    @property
+    def commands(self):
+        return self._commands
+
     def evaluate(self, line):
         try:
             return str(self.evaluate_internal(line))
+        except InterruptException as ie:
+            raise ie
         except Exception as e:
             return 'error {} {}'.format(e.__class__.__name__, str(e))
 
@@ -64,7 +83,7 @@ class Interpreter(object):
             arg_str = parts[1]
         command = self._commands[cmd_name]
         args = [self._resolve_reference(a) for a in arg_str.split()]
-        return EvaluationResult(command.invoke(args))
+        return EvaluationResult(command.invoke(self, args))
 
 
 VALUE_CONVERTER = {

@@ -4,22 +4,22 @@ from R_ev3dev.interpreter import Interpreter, Command, Reference
 
 
 class TestCommandInt(Command):
-    def invoke(self, args):
+    def invoke(self, interpreter_obj, args):
         return 1
 
 
 class TestCommandFloat(Command):
-    def invoke(self, args):
+    def invoke(self, interpreter_obj, args):
         return 1.0
 
 
 class TestCommandStr(Command):
-    def invoke(self, args):
+    def invoke(self, interpreter_obj, args):
         return "Hello World"
 
 
 class BaseTestCommand(Command):
-    def invoke(self, args):
+    def invoke(self, interpreter_obj, args):
         return self.__class__.__name__, args
 
 

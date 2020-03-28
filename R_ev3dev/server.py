@@ -1,5 +1,6 @@
 from threading import Thread, RLock
 import socket, logging
+from R_ev3dev.interpreter import InterruptException
 
 
 class Connection(object):
@@ -21,11 +22,14 @@ class Connection(object):
                         break
                     request = data.decode()
                     _log("<= {}", request.strip())
-                    response = self.__interpreter.evaluate(request)
-                    if response:
-                        response_data = "{}\n".format(response)
-                        _log("=> {}", response_data.strip())
-                        conn.sendall(response_data.encode())
+                    try:
+                        response = self.__interpreter.evaluate(request)
+                        if response:
+                            response_data = "{}\n".format(response)
+                            _log("=> {}", response_data.strip())
+                            conn.sendall(response_data.encode())
+                    except InterruptException:
+                        break
             _log("close")
         finally:
             server.unregister_client(self)

@@ -7,13 +7,19 @@ import logging, os
 
 
 class NoOperation(Command):
-    def invoke(self, args):
+    def invoke(self, interpreter_obj, args):
         return None
+
+
+class Close(Command):
+    def invoke(self, interpreter_obj, args):
+        interpreter_obj.close()
 
 
 def ev3_interpreter():
     return Interpreter([
         NoOperation("hello"),
+        Close("close"),
         Reference('A', motor.OUTPUT_A),
         Reference('B', motor.OUTPUT_B),
         Reference('C', motor.OUTPUT_C),
