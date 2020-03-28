@@ -1,4 +1,4 @@
-from threading import Thread
+from threading import Thread, RLock
 import socket, logging
 
 
@@ -7,23 +7,28 @@ class Connection(object):
         self.__buffer_size = buffer_size
         self.__interpreter = interpreter
 
-    def __call__(self, *args, **kwargs):
-        conn = args[0]
-        addr = args[1]
-        logging.info("open connection {}".format(addr))
-        with conn:
-            while True:
-                data = conn.recv(self.__buffer_size)
-                if not data or data == b'\x04':
-                    break
-                request = data.decode()
-                logging.info("<= {}".format(request.strip()))
-                response = self.__interpreter.evaluate(request)
-                if response:
-                    response_data = "{}\n".format(response)
-                    logging.info("=> {}".format(response_data.strip()))
-                    conn.sendall(response_data.encode())
-        logging.info("close connection {}".format(addr))
+    def __call__(self, server, conn, addr):
+        server.register_client(self)
+        try:
+            def _log(msg, *log_args):
+                logging.info("connection({}:{}) {}".format(addr[0], addr[1], msg.format(*log_args)))
+
+            _log("open")
+            with conn:
+                while True:
+                    data = conn.recv(self.__buffer_size)
+                    if not data or data == b'\x04':
+                        break
+                    request = data.decode()
+                    _log("<= {}", request.strip())
+                    response = self.__interpreter.evaluate(request)
+                    if response:
+                        response_data = "{}\n".format(response)
+                        _log("=> {}", response_data.strip())
+                        conn.sendall(response_data.encode())
+            _log("close")
+        finally:
+            server.unregister_client(self)
 
 
 class Server(object):
@@ -32,21 +37,38 @@ class Server(object):
                  host='',
                  port=9999,
                  buffer_size=2048,
-                 connection_backlog_size=2):
+                 max_clients=1):
         self.__host = host
         self.__port = port
         self.__buffer_size = buffer_size
         self.__interpreter_factory = interpreter_factory
-        self.__connection_backlog_size = connection_backlog_size
-        self.__connections = []
+        self.__max_clients = max_clients
+        self.__clients = []
+        self.__rlock = RLock()
+
+    def register_client(self, con):
+        self.__rlock.acquire()
+        self.__clients.append(con)
+        self.__rlock.release()
+
+    def unregister_client(self, con):
+        self.__rlock.acquire()
+        try:
+            self.__clients.remove(con)
+        finally:
+            self.__rlock.release()
 
     def run(self):
-        logging.info("start server host={} port={}".format(self.__host, self.__port))
+        logging.info("start server host={} port={} max-clients={}".format(self.__host, self.__port, self.__max_clients))
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((self.__host, self.__port))
-            s.listen(self.__connection_backlog_size)
+            s.listen()
             while True:
                 conn, addr = s.accept()
-                t = Thread(target=Connection(self.__interpreter_factory(), self.__buffer_size), args=(conn, addr))
-                self.__connections.append(t)
-                t.start()
+                if len(self.__clients) < self.__max_clients:
+                    connection = Connection(self.__interpreter_factory(), self.__buffer_size)
+                    t = Thread(target=connection, args=(self, conn, addr))
+                    t.start()
+                else:
+                    conn.sendall("error to many clients".encode())
+                    conn.close()

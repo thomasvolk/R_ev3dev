@@ -9,20 +9,22 @@ class RunServerCommand(Command):
       # The format is (long option, short option, description).
       ('host=', 'H', 'rev3 host'),
       ('port=', 'p', 'rev3 port'),
+      ('max-clients=', 'c', 'rev3 max client count'),
     ]
 
     def initialize_options(self):
         """Abstract method that is required to be overwritten"""
         self.host = ''
         self.port = '9999'
+        self.max_clients = 1
 
     def finalize_options(self):
         """Abstract method that is required to be overwritten"""
 
     def run(self):
         import R_ev3dev
-        print("start server host={} port={}".format(self.host, self.port))
-        server = R_ev3dev.server(host=self.host, port=int(self.port))
+        print("start server host={} port={} max.clients={}".format(self.host, self.port, self.max_clients))
+        server = R_ev3dev.server(host=self.host, port=int(self.port), max_clients=int(self.max_clients))
         server.run()
 
 
