@@ -7,35 +7,48 @@ class CloseException(Exception):
 
 
 class Connection(object):
-    def __init__(self, interpreter, buffer_size):
+    def __init__(self, server, socket_connection, client_address, interpreter, buffer_size):
         self.__buffer_size = buffer_size
         self.__interpreter = interpreter
+        self.__socket_connection = socket_connection
+        self.__client_address = client_address
+        self.__server = server
 
-    def __call__(self, server, conn, addr):
-        server.register_client(self)
+    def _log(self, msg, *log_args):
+        logging.info("connection({}:{}) {}".format(
+            self.__client_address[0],
+            self.__client_address[1],
+            msg.format(*log_args))
+        )
+
+    def receive(self):
+        data = self.__socket_connection.recv(self.__buffer_size)
+        if not data or data == b'\x04':
+            raise CloseException()
+        return data.decode()
+
+    def send(self, response_data):
+        self.__socket_connection.sendall(response_data.encode())
+
+    def __call__(self):
+        self.__server.register_client(self)
         try:
-            def _log(msg, *log_args):
-                logging.info("connection({}:{}) {}".format(addr[0], addr[1], msg.format(*log_args)))
-
-            _log("open")
-            with conn:
+            self._log("open")
+            with self.__socket_connection:
                 while True:
-                    data = conn.recv(self.__buffer_size)
-                    if not data or data == b'\x04':
-                        break
-                    request = data.decode()
-                    _log("<= {}", request.strip())
                     try:
+                        request = self.receive()
+                        self._log("<= {}", request.strip())
                         response = self.__interpreter.evaluate(request)
                         if response:
                             response_data = "{}\n".format(response)
-                            _log("=> {}", response_data.strip())
-                            conn.sendall(response_data.encode())
+                            self._log("=> {}", response_data.strip())
+                            self.send(response_data)
                     except CloseException:
                         break
-            _log("close")
+            self._log("close")
         finally:
-            server.unregister_client(self)
+            self.__server.unregister_client(self)
 
 
 class Server(object):
@@ -73,8 +86,14 @@ class Server(object):
             while True:
                 conn, addr = s.accept()
                 if len(self.__clients) < self.__max_clients:
-                    connection = Connection(self.__interpreter_factory(), self.__buffer_size)
-                    t = Thread(target=connection, args=(self, conn, addr))
+                    connection = Connection(
+                        self,
+                        conn,
+                        addr,
+                        self.__interpreter_factory(),
+                        self.__buffer_size
+                    )
+                    t = Thread(target=connection, args=[])
                     t.start()
                 else:
                     conn.sendall("error to many clients".encode())
