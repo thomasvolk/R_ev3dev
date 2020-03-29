@@ -27,6 +27,12 @@ class GetDistance(PeripheralAction):
 
 
 class Infrared(PeripheralCommand):
+    """ reads the infrared sensor
+
+infrared <id> on <in>
+infrared <id> distance [<channel>]
+
+    """
     def __init__(self, name):
         super().__init__(name, [
                             On(),

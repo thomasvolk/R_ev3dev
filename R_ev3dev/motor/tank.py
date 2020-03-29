@@ -30,6 +30,12 @@ class OnForRotations(PeripheralAction):
 
 
 class Tank(PeripheralCommand):
+    """ controls a pair of motors simultaneously, via individual speed setpoints for each motor
+
+tank <id> on <out_left> <out_right>
+tank <id> on_for_rotations <left_speed_percent> <right_speed_percent> <rotations>
+
+    """
     def __init__(self, name):
         super().__init__(name, [
                             On(),

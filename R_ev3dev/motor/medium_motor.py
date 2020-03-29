@@ -27,6 +27,12 @@ class OnForRotations(PeripheralAction):
 
 
 class MediumMotor(PeripheralCommand):
+    """ controls a medium motor
+
+medium_motor <id> on <out>
+medium_motor <id> on_for_rotations <speed_percent> <rotations>
+
+    """
     def __init__(self, name):
         super().__init__(name, [
                             On(),
