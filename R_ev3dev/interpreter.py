@@ -27,17 +27,28 @@ class Reference(Item):
 
 class Command(Item, ABC):
     @abstractmethod
-    def invoke(self, interpreter_obj, args):
+    def invoke(self, interpreter_context, args):
         """
         abstract method for command execution
 
-        :param interpreter_obj: interpreter
+        :param interpreter_context: interpreter context
         :param args: arguments
         :return: command result
         """
 
 
 class Interpreter(object):
+    class Context(object):
+        def __init__(self, interpreter):
+            self.__interpreter = interpreter
+
+        @property
+        def commands(self):
+            return self.__interpreter.commands
+
+        def throw(self, e):
+            raise Interpreter.WrapperException(e)
+
     class WrapperException(Exception):
         """
         interpreter exception
@@ -52,15 +63,13 @@ class Interpreter(object):
     def __init__(self, items):
         self._commands = {item.name: item for item in items if isinstance(item, Command)}
         self._references = {item.key: item for item in items if isinstance(item, Reference)}
+        self._context = Interpreter.Context(self)
 
     def _resolve_reference(self, item):
         ref = self._references.get(item)
         if ref:
             return ref.value
         return item
-
-    def throw(self, e):
-        raise Interpreter.WrapperException(e)
 
     @property
     def commands(self):
@@ -83,7 +92,7 @@ class Interpreter(object):
             arg_str = parts[1]
         command = self._commands[cmd_name]
         args = [self._resolve_reference(a) for a in arg_str.split()]
-        return EvaluationResult(command.invoke(self, args))
+        return EvaluationResult(command.invoke(self._context, args))
 
 
 VALUE_CONVERTER = {

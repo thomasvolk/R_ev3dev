@@ -7,27 +7,27 @@ class ExceptionCommand(Command):
     class TestError(Exception):
         pass
 
-    def invoke(self, interpreter_obj, args):
-        return interpreter_obj.throw(ExceptionCommand.TestError())
+    def invoke(self, interpreter_context, args):
+        return interpreter_context.throw(ExceptionCommand.TestError())
 
 
 class TestCommandInt(Command):
-    def invoke(self, interpreter_obj, args):
+    def invoke(self, interpreter_context, args):
         return 1
 
 
 class TestCommandFloat(Command):
-    def invoke(self, interpreter_obj, args):
+    def invoke(self, interpreter_context, args):
         return 1.0
 
 
 class TestCommandStr(Command):
-    def invoke(self, interpreter_obj, args):
+    def invoke(self, interpreter_context, args):
         return "Hello World"
 
 
 class BaseTestCommand(Command):
-    def invoke(self, interpreter_obj, args):
+    def invoke(self, interpreter_context, args):
         return self.__class__.__name__, args
 
 

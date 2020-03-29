@@ -7,13 +7,13 @@ import logging, os
 
 
 class NoOperation(Command):
-    def invoke(self, interpreter_obj, args):
+    def invoke(self, interpreter_context, args):
         return None
 
 
 class Close(Command):
-    def invoke(self, interpreter_obj, args):
-        interpreter_obj.throw(CloseException())
+    def invoke(self, interpreter_context, args):
+        interpreter_context.throw(CloseException())
 
 
 def ev3_interpreter():
