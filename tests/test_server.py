@@ -12,8 +12,9 @@ def mock_interpreter_factory():
 
 
 class TestServer(unittest.TestCase):
-    def test_add_client(self):
+    def test_new_client(self):
         sf = MockServerSocketModule()
         conn = MockSocketConnection()
         server = Server(mock_interpreter_factory, socket_lib=sf)
-        server.add_client(conn, ('test_client', 12345))
+        ct = server.new_client(conn, ('test_client', 12345))
+        ct.join()

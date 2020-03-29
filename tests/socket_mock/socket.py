@@ -1,4 +1,9 @@
+
+
 class MockSocketConnection(object):
+
+    def do_receive(self, msg):
+        self.__recv_queue.put(msg)
 
     def sendall(self, msg):
         pass
@@ -17,15 +22,13 @@ class MockSocketConnection(object):
 
 
 class MockSocket(object):
-    def __init__(self, family=-1, type=-1, proto=-1, fileno=None, response_map={}):
-        self.__response_map = response_map
+    def __init__(self, family=-1, type=-1, proto=-1, fileno=None):
         self.family = family
         self.type = type
         self.proto = proto
         self.fileno = fileno
         self.address = None
-        self.log = []
-        self.__last_received = None
+        self.__connections = []
 
     def connect(self, addr):
         self.address = addr
@@ -37,7 +40,13 @@ class MockSocket(object):
         pass
 
     def accept(self):
-        return MockSocketConnection(), ('test_client', 8888)
+        connection = MockSocketConnection()
+        self.__connections.append(connection)
+        return connection, ('test_client', 8888)
+
+    @property
+    def connections(self):
+        return self.__connections
 
     def close(self):
         pass

@@ -4,17 +4,19 @@ AF_INET = 0
 SOCK_STREAM = 1
 
 
-def socket(family=-1, type=-1, proto=-1, fileno=None, response_map={}):
-    return MockSocket(family=family, type=type, proto=proto, fileno=fileno, response_map=response_map)
+def socket(family=-1, type=-1, proto=-1, fileno=None):
+    return MockSocket(family=family, type=type, proto=proto, fileno=fileno)
 
 
 class MockServerSocketModule:
     def __init__(self):
-        self.__response_map = {}
-        self.add_response('hello', 'ok')
+        self.__sockets = []
 
-    def add_response(self, request, response):
-        self.__response_map[request] = response
+    @property
+    def sockets(self):
+        return self.__sockets
 
     def socket(self, family=-1, type=-1, proto=-1, fileno=None):
-        return socket(family=family, type=type, proto=proto, fileno=fileno, response_map=self.__response_map)
+        s = socket(family=family, type=type, proto=proto, fileno=fileno)
+        self.__sockets.append(s)
+        return s

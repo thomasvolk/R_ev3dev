@@ -13,6 +13,7 @@ class Connection(object):
         self.__socket_connection = socket_connection
         self.__client_address = client_address
         self.__server = server
+        self.__server.register_client(self)
 
     def _log(self, msg, *log_args):
         logging.info("connection({}:{}) {}".format(
@@ -31,7 +32,6 @@ class Connection(object):
         self.__socket_connection.sendall(response_data.encode())
 
     def __call__(self):
-        self.__server.register_client(self)
         try:
             self._log("open")
             with self.__socket_connection:
@@ -80,20 +80,26 @@ class Server(object):
         finally:
             self.__rlock.release()
 
-    def add_client(self, socker_connection, address):
+    def new_client(self, socket_connection, address):
         if len(self.__clients) < self.__max_clients:
             connection = Connection(
                 self,
-                socker_connection,
+                socket_connection,
                 address,
                 self.__interpreter_factory(),
                 self.__buffer_size
             )
             t = Thread(target=connection, args=[])
             t.start()
+            return t
         else:
-            socker_connection.sendall("error to many clients".encode())
-            socker_connection.close()
+            socket_connection.sendall("error to many clients".encode())
+            socket_connection.close()
+            return None
+
+    @property
+    def clients(self):
+        return self.__clients
 
     def run(self):
         logging.info("start server host={} port={} max-clients={}".format(self.__host, self.__port, self.__max_clients))
@@ -102,4 +108,4 @@ class Server(object):
             s.listen()
             while True:
                 conn, address = s.accept()
-                self.add_client(conn, address)
+                self.new_client(conn, address)
