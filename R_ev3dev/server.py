@@ -57,7 +57,8 @@ class Server(object):
                  host='',
                  port=9999,
                  buffer_size=2048,
-                 max_clients=1):
+                 max_clients=1,
+                 socket_lib=socket):
         self.__host = host
         self.__port = port
         self.__buffer_size = buffer_size
@@ -65,6 +66,7 @@ class Server(object):
         self.__max_clients = max_clients
         self.__clients = []
         self.__rlock = RLock()
+        self.__socket = socket_lib
 
     def register_client(self, con):
         self.__rlock.acquire()
@@ -78,23 +80,26 @@ class Server(object):
         finally:
             self.__rlock.release()
 
+    def add_client(self, socker_connection, address):
+        if len(self.__clients) < self.__max_clients:
+            connection = Connection(
+                self,
+                socker_connection,
+                address,
+                self.__interpreter_factory(),
+                self.__buffer_size
+            )
+            t = Thread(target=connection, args=[])
+            t.start()
+        else:
+            socker_connection.sendall("error to many clients".encode())
+            socker_connection.close()
+
     def run(self):
         logging.info("start server host={} port={} max-clients={}".format(self.__host, self.__port, self.__max_clients))
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        with self.__socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((self.__host, self.__port))
             s.listen()
             while True:
-                conn, addr = s.accept()
-                if len(self.__clients) < self.__max_clients:
-                    connection = Connection(
-                        self,
-                        conn,
-                        addr,
-                        self.__interpreter_factory(),
-                        self.__buffer_size
-                    )
-                    t = Thread(target=connection, args=[])
-                    t.start()
-                else:
-                    conn.sendall("error to many clients".encode())
-                    conn.close()
+                conn, address = s.accept()
+                self.add_client(conn, address)
