@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-
+import json
 
 class Item(object):
     def __init__(self, name):
@@ -96,9 +96,10 @@ class Interpreter(object):
 
 
 VALUE_CONVERTER = {
-    int: lambda v: str(v),
-    float: lambda v: str(v),
-    str: lambda v: v,
+    int: lambda v: ('int', str(v)),
+    float: lambda v: ('float', str(v)),
+    str: lambda v: ('str', v),
+    dict: lambda d: ('json', json.dumps(d))
 }
 
 
@@ -107,8 +108,8 @@ class EvaluationResult(object):
         self.value = value
 
     def __str__(self):
-        t = type(self.value)
-        value_converter = VALUE_CONVERTER.get(t)
+        value_converter = VALUE_CONVERTER.get(type(self.value))
         if value_converter:
-            return "value {} {}".format(t.__name__, value_converter(self.value))
+            t, v = value_converter(self.value)
+            return "value {} {}".format(t, v)
         return "ok"

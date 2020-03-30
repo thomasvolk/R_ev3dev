@@ -5,13 +5,21 @@ OUTPUT_D = 'outD'
 
 
 class Motor(object):
-    def __init__(self, address=None, **kwargs):
+    def __init__(self, address=None, device_name=None, **kwargs):
         self.address = address
         self.kwargs = kwargs
         self.log = []
 
     def on_for_rotations(self, speed, rotations, brake=True, block=True):
         self.log.append(('on_for_rotations', repr(speed), rotations))
+
+
+def list_motors():
+    return iter([
+        Motor(OUTPUT_A, 'lego-ev3-m-motor'),
+        Motor(OUTPUT_B, 'lego-ev3-l-motor'),
+        Motor(OUTPUT_C, 'lego-ev3-l-motor'),
+    ])
 
 
 class LargeMotor(Motor):
