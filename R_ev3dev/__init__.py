@@ -1,5 +1,5 @@
 from R_ev3dev.interpreter import Interpreter, Command, Reference
-from R_ev3dev.motor import Tank, MediumMotor, LargeMotor
+from R_ev3dev.motor import Tank, MediumMotor, LargeMotor, ListMotors
 from R_ev3dev.sensor import Color, Infrared
 from R_ev3dev.server import Server, CloseException
 from R_ev3dev.help import Version, Help
@@ -41,7 +41,8 @@ def ev3_interpreter():
         Color("color"),
         Infrared("infrared"),
         MediumMotor("medium_motor"),
-        LargeMotor("large_motor")
+        LargeMotor("large_motor"),
+        ListMotors("list_motors")
     ])
 
 

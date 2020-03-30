@@ -5,8 +5,9 @@ OUTPUT_D = 'outD'
 
 
 class Motor(object):
-    def __init__(self, address=None, device_name=None, **kwargs):
+    def __init__(self, address=None, driver_name=None, **kwargs):
         self.address = address
+        self.driver_name = driver_name
         self.kwargs = kwargs
         self.log = []
 

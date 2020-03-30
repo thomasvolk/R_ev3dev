@@ -35,6 +35,11 @@ class TestCommandDict(Command):
         }
 
 
+class TestCommandList(Command):
+    def invoke(self, interpreter_context, args):
+        return [{'foo': 'bar'}, 1, 2]
+
+
 class BaseTestCommand(Command):
     def invoke(self, interpreter_context, args):
         return self.__class__.__name__, args
@@ -75,12 +80,14 @@ class TestInterpreter(unittest.TestCase):
             TestCommandInt("test_int"),
             TestCommandFloat("test_float"),
             TestCommandStr("test_str"),
-            TestCommandDict("test_dict")
+            TestCommandDict("test_dict"),
+            TestCommandList("test_list")
         ])
         self.assertEqual(i.evaluate("test_int"), "value int 1")
         self.assertEqual(i.evaluate("test_float"), "value float 1.0")
         self.assertEqual(i.evaluate("test_str"), "value str Hello World")
         self.assertEqual(i.evaluate("test_dict"), 'value json {"foo": "bar", "int": 1, "float": 7.4}')
+        self.assertEqual(i.evaluate("test_list"), 'value json [{"foo": "bar"}, 1, 2]')
         self.assertEqual(i.evaluate("test01 1 #X 3"), "ok")
         self.assertEqual(i.evaluate("x"), "error KeyError 'x'")
 

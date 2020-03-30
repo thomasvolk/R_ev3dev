@@ -99,7 +99,8 @@ VALUE_CONVERTER = {
     int: lambda v: ('int', str(v)),
     float: lambda v: ('float', str(v)),
     str: lambda v: ('str', v),
-    dict: lambda d: ('json', json.dumps(d))
+    dict: lambda d: ('json', json.dumps(d)),
+    list: lambda d: ('json', json.dumps(d))
 }
 
 

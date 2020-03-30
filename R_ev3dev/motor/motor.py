@@ -1,5 +1,12 @@
 from R_ev3dev.peripheral import PeripheralCommand, PeripheralAction
+from R_ev3dev.interpreter import Command
 from R_ev3dev.ev3 import ev3dev2
+
+
+class ListMotors(Command):
+    """ list all motors """
+    def invoke(self, interpreter_context, args):
+        return [{'driver_name': m.driver_name, 'address': m.address} for m in ev3dev2.motor.list_motors()]
 
 
 class On(PeripheralAction):

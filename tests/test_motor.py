@@ -19,3 +19,13 @@ class TestLargeMotor(unittest.TestCase):
         self.assertEqual(lm.address, 'outD')
         i.evaluate("large_motor 2 on_for_rotations 10 2")
         self.assertEqual(lm.log, [('on_for_rotations', 'SpeedPercent(10)', 2)])
+
+
+class TestlistMotors(unittest.TestCase):
+    def test_list(self):
+        i = ev3_interpreter()
+        self.assertEqual(i.evaluate_internal('list_motors').value, [
+            {'address': 'outA', 'driver_name': 'lego-ev3-m-motor'},
+            {'address': 'outB', 'driver_name': 'lego-ev3-l-motor'},
+            {'address': 'outC', 'driver_name': 'lego-ev3-l-motor'},
+        ])

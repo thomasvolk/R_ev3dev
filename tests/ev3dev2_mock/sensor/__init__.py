@@ -7,9 +7,9 @@ INPUT_4 = 'in4'
 
 
 class Sensor(object):
-    def __init__(self, address, device_name):
+    def __init__(self, address, driver_name):
         self.address = address
-        self.device_name = device_name
+        self.driver_name = driver_name
 
 
 def list_sensors():
