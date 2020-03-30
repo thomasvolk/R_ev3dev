@@ -30,11 +30,6 @@ class SpeedPercent(object):
         return "{}({})".format(self.__class__.__name__, self.percent)
 
 
-class LargeMotor(object):
-    def __init__(self, out):
-        self.out = out
-
-
 class MoveTank(object):
     def __init__(self, left_motor_port, right_motor_port, **kwargs):
         self.left_motor_port = left_motor_port

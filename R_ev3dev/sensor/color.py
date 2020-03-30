@@ -24,8 +24,8 @@ class GetColor(PeripheralAction):
 class Color(PeripheralCommand):
     """ reads the color sensor
 
-color <id> on <in>
-color <id> color
+        color <id> on <in>
+        color <id> color
 
     """
     def __init__(self, name):
