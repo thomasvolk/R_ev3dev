@@ -26,3 +26,12 @@ class TestColor(unittest.TestCase):
         color_value = i.evaluate("color 1 color")
         self.assertEqual(color_value, 'value int 9')
 
+
+class TestListSensors(unittest.TestCase):
+    def test_list(self):
+        i = ev3_interpreter()
+        self.assertEqual(i.evaluate_internal('list_sensors').value, [
+            {'address': 'in1', 'driver_name': 'lego-ev3-touch'},
+            {'address': 'in2', 'driver_name': 'lego-ev3-ir'},
+            {'address': 'in3', 'driver_name': 'lego-ev3-color'},
+        ])

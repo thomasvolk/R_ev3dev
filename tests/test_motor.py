@@ -21,7 +21,7 @@ class TestLargeMotor(unittest.TestCase):
         self.assertEqual(lm.log, [('on_for_rotations', 'SpeedPercent(10)', 2)])
 
 
-class TestlistMotors(unittest.TestCase):
+class TestListMotors(unittest.TestCase):
     def test_list(self):
         i = ev3_interpreter()
         self.assertEqual(i.evaluate_internal('list_motors').value, [
