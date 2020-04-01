@@ -24,7 +24,12 @@ class RunServerCommand(Command):
     def run(self):
         import R_ev3dev
         print("start server host={} port={} max.clients={}".format(self.host, self.port, self.max_clients))
-        server = R_ev3dev.server(host=self.host, port=int(self.port), max_clients=int(self.max_clients))
+        server = R_ev3dev.server(
+            host=self.host,
+            port=int(self.port),
+            max_clients=int(self.max_clients),
+            log_level='INFO'
+        )
         server.run()
 
 

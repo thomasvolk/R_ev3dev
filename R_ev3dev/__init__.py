@@ -52,8 +52,9 @@ def ev3_interpreter():
 def server(host='',
            port=9999,
            buffer_size=2048,
-           max_clients=1):
-    logging.basicConfig(level=os.environ.get("LOGLEVEL", "WARN"))
+           max_clients=1,
+           log_level='WARN'):
+    logging.basicConfig(level=os.environ.get("LOGLEVEL", log_level))
     return Server(ev3_interpreter,
                   host=host,
                   port=port,
