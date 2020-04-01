@@ -1,6 +1,6 @@
 from R_ev3dev.interpreter import Interpreter, Command, Reference
 from R_ev3dev.motor import Tank, MediumMotor, LargeMotor, ListMotors
-from R_ev3dev.sensor import Color, Infrared, ListSensors
+from R_ev3dev.sensor import Color, Infrared, Touch, Gyro, ListSensors
 from R_ev3dev.server import Server, CloseException
 from R_ev3dev.help import Version, Help
 from ev3dev2 import motor, sensor
@@ -40,6 +40,8 @@ def ev3_interpreter():
         Tank("tank"),
         Color("color"),
         Infrared("infrared"),
+        Gyro("gyro"),
+        Touch("touch"),
         MediumMotor("medium_motor"),
         LargeMotor("large_motor"),
         ListMotors("list_motors"),

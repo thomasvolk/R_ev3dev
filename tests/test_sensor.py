@@ -27,6 +27,26 @@ class TestColor(unittest.TestCase):
         self.assertEqual(color_value, 'value int 9')
 
 
+class TestGyro(unittest.TestCase):
+    def test_angle(self):
+        i = ev3_interpreter()
+        gyro = i.evaluate_internal("gyro 1 on #1").value
+        self.assertEqual(gyro.angle, 45)
+        gyro.angle = 90
+        value = i.evaluate("gyro 1 angle")
+        self.assertEqual(value, 'value int 90')
+
+
+class TestTouch(unittest.TestCase):
+    def test_is_pressed(self):
+        i = ev3_interpreter()
+        touch = i.evaluate_internal("touch 1 on #1").value
+        self.assertEqual(touch.is_pressed, True)
+        touch.is_pressed = False
+        value = i.evaluate("touch 1 is_pressed")
+        self.assertEqual(value, 'value boolean False')
+
+
 class TestListSensors(unittest.TestCase):
     def test_list(self):
         i = ev3_interpreter()
