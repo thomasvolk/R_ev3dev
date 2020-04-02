@@ -1,5 +1,5 @@
 from R_ev3dev.peripheral import PeripheralCommand, PeripheralAction
-from R_ev3dev.ev3 import ev3dev2
+from R_ev3dev.ev3 import lego_sensor
 
 
 class On(PeripheralAction):
@@ -8,7 +8,7 @@ class On(PeripheralAction):
 
     def invoke(self, context, args):
         in_1 = args[0]
-        touch_sensor  = ev3dev2.sensor.lego.TouchSensor(address=in_1)
+        touch_sensor = lego_sensor.TouchSensor(address=in_1)
         context["touch_sensor"] = touch_sensor
         return touch_sensor
 
