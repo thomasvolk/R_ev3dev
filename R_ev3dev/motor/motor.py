@@ -1,4 +1,4 @@
-from R_ev3dev.peripheral import PeripheralCommand, PeripheralAction
+from R_ev3dev.peripheral import BackgroundPeripheralCommand, PeripheralAction
 from R_ev3dev.interpreter import Command
 from R_ev3dev.ev3 import ev3dev2
 
@@ -34,11 +34,11 @@ class OnForRotations(PeripheralAction):
         )
 
 
-class Motor(PeripheralCommand):
+class Motor(BackgroundPeripheralCommand):
     def __init__(self, name, motor_type_factory):
         super().__init__(name, [
                             On(motor_type_factory),
-                            OnForRotations()
+                            self.with_background_proxy(OnForRotations())
                          ])
 
 
@@ -47,6 +47,7 @@ class LargeMotor(Motor):
 
         large_motor <id> on <out>
         large_motor <id> on_for_rotations <speed_percent> <rotations>
+        large_motor <id> run_in_background true|false
 
     """
     def __init__(self, name):
@@ -58,6 +59,7 @@ class MediumMotor(Motor):
 
         medium_motor <id> on <out>
         medium_motor <id> on_for_rotations <speed_percent> <rotations>
+        medium_motor <id> run_in_background true|false
 
     """
     def __init__(self, name):

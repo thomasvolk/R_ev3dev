@@ -1,4 +1,4 @@
-from R_ev3dev.peripheral import PeripheralCommand, PeripheralAction
+from R_ev3dev.peripheral import BackgroundPeripheralCommand, PeripheralAction
 from R_ev3dev.ev3 import ev3dev2
 
 
@@ -29,15 +29,16 @@ class OnForRotations(PeripheralAction):
         )
 
 
-class Tank(PeripheralCommand):
+class Tank(BackgroundPeripheralCommand):
     """ controls a pair of motors simultaneously, via individual speed setpoints for each motor
 
         tank <id> on <out_left> <out_right>
         tank <id> on_for_rotations <left_speed_percent> <right_speed_percent> <rotations>
+        tank <id> run_in_background true|false
 
     """
     def __init__(self, name):
         super().__init__(name, [
                             On(),
-                            OnForRotations()
+                            self.with_background_proxy(OnForRotations())
                          ])

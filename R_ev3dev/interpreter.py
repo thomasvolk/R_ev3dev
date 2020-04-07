@@ -1,6 +1,11 @@
 from abc import ABC, abstractmethod
 import json
 
+
+def string_to_bool(s):
+    return s.strip().lower() == 'true'
+
+
 class Item(object):
     def __init__(self, name):
         self.__name = name
