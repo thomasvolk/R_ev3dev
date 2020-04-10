@@ -1,2 +1,2 @@
 
-from ev3dev2_mock import motor, sensor
+from ev3dev2_mock import motor, sensor, sound

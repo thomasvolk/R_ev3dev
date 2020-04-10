@@ -23,6 +23,9 @@ class Help(Command):
 
   R_ev3 protocol language version {}
 
+    author: Thomas Volk
+    license: Apache License Version 2.0
+
   possible commands:
 
     {} 

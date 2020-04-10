@@ -42,6 +42,9 @@ class TestHelp(unittest.TestCase):
 
   R_ev3 protocol language version 0.0.1
 
+    author: Thomas Volk
+    license: Apache License Version 2.0
+
   possible commands:
 
     c01 - this is the test command 01
