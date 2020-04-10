@@ -25,6 +25,7 @@ class Help(Command):
 
     author: Thomas Volk
     license: Apache License Version 2.0
+    source: https://github.com/thomasvolk/R_ev3dev
 
   possible commands:
 
