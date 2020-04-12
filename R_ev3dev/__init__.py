@@ -4,7 +4,7 @@ from R_ev3dev.sensor import Color, Infrared, Touch, Gyro, ListSensors
 from R_ev3dev.sound import Speak
 from R_ev3dev.server import Server, CloseException
 from R_ev3dev.help import Version, Help
-from ev3dev2 import motor, sensor
+from R_ev3dev.ev3 import motor, sensor
 import logging
 import os
 
