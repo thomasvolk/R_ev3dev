@@ -5,7 +5,7 @@ from R_ev3dev.ev3 import sound
 
 
 class TestSpeak(unittest.TestCase):
-    def test_get_value(self):
+    def test_speak(self):
         i = ev3_interpreter()
         i.evaluate_internal("speak Hello World").value
         self.assertEqual(sound.get_spoken(), ["Hello World"])
