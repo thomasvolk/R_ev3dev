@@ -6,5 +6,5 @@ class Speak(Command):
     """ let the robot speak text """
     def invoke(self, interpreter_context, args):
         s = sound.Sound()
-        text = args[0]
+        text = " ".join(args)
         s.speak(text)
