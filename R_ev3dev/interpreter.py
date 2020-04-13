@@ -48,8 +48,8 @@ class Interpreter(object):
             self.__interpreter = interpreter
 
         @property
-        def commands(self):
-            return self.__interpreter.commands
+        def interpreter(self):
+            return self.__interpreter
 
         def throw(self, e):
             raise Interpreter.WrapperException(e)

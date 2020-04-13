@@ -47,6 +47,6 @@ class Help(Command):
     def invoke(self, interpreter_context, args):
         if len(args) > 0:
             cmd = args[0]
-            return self._details(interpreter_context.commands[cmd])
+            return self._details(interpreter_context.interpreter.commands[cmd])
         else:
-            return self._overview(interpreter_context.commands.values())
+            return self._overview(interpreter_context.interpreter.commands.values())
