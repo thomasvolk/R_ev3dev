@@ -60,6 +60,10 @@ class BackgroundRunner(object):
         self.__thread = None
 
 
+class NestedBackgroundError(Exception):
+    """ will be raised if the client tries to nest bg calls """
+
+
 class ToBackground(Command):
     """ run command in the background
 
@@ -70,15 +74,20 @@ class ToBackground(Command):
         super().__init__(name)
         self.__background_runner = None
 
-    def invoke(self, interpreter_context, args):
+    def __schedule(self, interpreter, command_string):
         if self.__background_runner is None:
             self.__background_runner = BackgroundRunner()
+        self.__background_runner.run_later(
+            interpreter.evaluate,
+            command_string
+        )
+
+    def invoke(self, interpreter_context, args):
         if len(args):
+            if args[0].strip() == self.name:
+                raise NestedBackgroundError("nested calls of bg are not allowed!")
             command_string = " ".join(args)
-            self.__background_runner.run_later(
-                interpreter_context.interpreter.interpreter.evaluate,
-                command_string
-            )
+            self.__schedule(interpreter_context.interpreter, command_string)
         else:
             self.__background_runner.stop()
             self.__background_runner = None
