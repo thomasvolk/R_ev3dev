@@ -2,7 +2,7 @@ from R_ev3dev.interpreter import Interpreter, Command, Reference
 from R_ev3dev.motor import Tank, MediumMotor, LargeMotor, ListMotors
 from R_ev3dev.sensor import Color, Infrared, Touch, Gyro, ListSensors
 from R_ev3dev.sound import Speak
-from R_ev3dev.background import ToBackground
+from R_ev3dev.background import ToBackground, Sleep
 from R_ev3dev.server import Server, CloseException
 from R_ev3dev.help import Version, Help
 from R_ev3dev.ev3 import motor, sensor
@@ -32,6 +32,7 @@ def ev3_interpreter():
         Hello("hello"),
         Close("close"),
         ToBackground("bg"),
+        Sleep("sleep"),
         Reference('A', motor.OUTPUT_A),
         Reference('B', motor.OUTPUT_B),
         Reference('C', motor.OUTPUT_C),

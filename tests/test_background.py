@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import unittest
-from R_ev3dev.background import BackgroundRunner, StoppedException, UnknownMessageException
+from R_ev3dev.background import BackgroundRunner, StoppedException, UnknownMessageException, NestedBackgroundError
+from R_ev3dev import ev3_interpreter
+from R_ev3dev.ev3 import sound
 
 
 class TestBackgroundRunner(unittest.TestCase):
@@ -28,3 +30,22 @@ class TestBackgroundRunner(unittest.TestCase):
         br = BackgroundRunner()
         self.assertRaises(UnknownMessageException, br.run_later, "?")
         br.stop()
+
+
+class TestToBackground(unittest.TestCase):
+    def setUp(self):
+        sound.clear_spoken()
+
+    def test_bg(self):
+        i = ev3_interpreter()
+        i.evaluate_internal("bg sleep 0.1")
+        i.evaluate_internal("bg speak Hello World")
+        i.evaluate_internal("bg sleep 0.1")
+        i.evaluate_internal("bg speak The End")
+        i.evaluate_internal("bg")
+        self.assertEqual(sound.get_spoken(), ["Hello World", "The End"])
+
+    def test_nested_bg(self):
+        i = ev3_interpreter()
+        self.assertRaises(NestedBackgroundError, i.evaluate_internal, "bg bg sleep 0.1")
+

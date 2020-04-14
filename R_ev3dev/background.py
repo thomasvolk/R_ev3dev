@@ -1,6 +1,7 @@
 from queue import Queue
 from threading import Thread
 from enum import Enum
+import time
 from R_ev3dev.interpreter import Command
 
 
@@ -62,6 +63,19 @@ class BackgroundRunner(object):
 
 class NestedBackgroundError(Exception):
     """ will be raised if the client tries to nest bg calls """
+
+
+class Sleep(Command):
+    """ sleep for seconds
+
+        sleep <seconds> - sleep for seconds (float)
+    """
+    def __init__(self, name):
+        super().__init__(name)
+
+    def invoke(self, interpreter_context, args):
+        seconds = float(args[0])
+        time.sleep(seconds)
 
 
 class ToBackground(Command):
